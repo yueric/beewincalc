@@ -9,7 +9,7 @@
 			秉文金融计算器软件可以进行多种金融问题运算，包含了所有AFP考试的计算功能：货币时间价值、利率转化、不规则现金流的净现值和内部收益率、房贷摊销、债券计算、日期计算、数列统计等。 
 
 ###技术实现
-			后台采用ThinkPHP，前端采用JQuery+bootstrap，图标采用HighCharts
+			后台采用ThinkPHP，前端采用JQuery+bootstrap，图表采用HighCharts
 			
 ###备注
 			代码未包含ThinkPHP，未包含算法逻辑
