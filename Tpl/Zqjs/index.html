@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<link rel="stylesheet" href="Public/assets/bootstrap-timepicker/css/bootstrap-datetimepicker.min.css">
+<script src="Public/assets/bootstrap-timepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$( "#mrr" ).datetimepicker({
+			 todayHighlight:true
+		});
+		$( "#mcr" ).datetimepicker({
+			 todayHighlight:true
+		});
+		$("#mrrt").keyup(function(){    
+			$(this).val($(this).val().replace(/[^0-9/-]/g,''));    
+		}).bind("paste",function(){  //CTR+V事件处理    
+			$(this).val($(this).val().replace(/[^0-9/-]/g,''));     
+		}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#mcrt").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));    
+		}).bind("paste",function(){  //CTR+V事件处理    
+			$(this).val($(this).val().replace(/[^0-9/-]/g,''));     
+		}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#shjg").keyup(function(){    
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+		}).bind("paste",function(){  //CTR+V事件处理    
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+		}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#syl").keyup(function(){    
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+		}).bind("paste",function(){  //CTR+V事件处理    
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+		}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#pmlv").keyup(function(){    
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+		}).bind("paste",function(){  //CTR+V事件处理    
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+		}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+	});
+	function calc(){
+		if(checkInput()){
+			var pdata ={shjg:$("#shjg").val(),pmlv:$("#pmlv").val()/100,rqms:$('input:radio:checked').val(),mrr:$("#mrrt").val(),mcr:$("#mcrt").val(),fxcs:$("#fxcs").val(),syl:$("#syl").val()/100};//
+			var url = "?m=Zqjs&a=calc";			
+			inva(url,pdata,"xxx");
+		}	
+	}
+	function calcsy(){
+		if(checkInput()){
+			var pdata ={shjg:$("#shjg").val(),pmlv:$("#pmlv").val()/100,rqms:$('input:radio:checked').val(),mrr:$("#mrrt").val(),mcr:$("#mcrt").val(),fxcs:$("#fxcs").val(),zqjg:$("#zqjg").val()};//
+			var url = "?m=Zqjs&a=calcsy";			
+			invaww(url,pdata,"xxx");
+		}	
+	}
+	function checkInput(){
+		if($("#mcrt").val()>=$("#mrrt").val()){
+			return true;
+		}else{
+			alert("卖出日必须大等于买入日！");
+			$("#mcrt").focus();
+			return false;
+		}
+	}
+	function afterAjax(data){
+		var arr = eval("("+data+")"); 
+		$("#yjlx").val(arr.yjlx);
+		if(arr.zqjg){ //typeof(arr.syl)==undefined){		
+			$("#zqjg").val(arr.zqjg);
+		}
+		if(arr.syl){ //typeof(arr.zqjg)==undefined){	
+			$("#syl").val(arr.syl);
+		}
+	}	
+</script>
+	<include file="Public:nav" />
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row-fluid">
+			 <div class="row-fluid">
+				<div class="row-fluid">
+					<h2>债券计算器</h2>
+					<div class="form-horizontal">
+						<fieldset>
+						<div class="control-group">
+							<label class="control-label" for="shjg">赎回价格</label>
+							<div class="controls">
+							  <input class="input-small " id="shjg" type="text" value="0">
+							</div>
+						 </div>
+						 <div class="control-group">
+							<label class="control-label" for="pmlv">票面利率</label>
+							<div class="controls">
+							  <div class="input-append">
+								<input class="input-mini focused" id="pmlv" type="text" value="0"><span class="add-on">%</span>
+							  </div>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="rqms">日期模式</label>
+							<div class="controls">
+							  <input type="radio" name="rqms" id="rqms" value="sj" checked="checked" >实际天数 <input type="radio" name="rqms" id="rqms" value="sz">30/360天
+							</div>							
+						  </div>
+						<div class="control-group">
+							<label class="control-label" for="mrr">买入日</label>
+							<div class="controls">
+								<div  class="input-append date"  id="mrr">
+									<input class="input-small " data-format="yyyy-MM-dd" id="mrrt" type="text" value="{$curDay}">
+									<span class="add-on">
+										  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+									  </i>
+									</span>
+								</div>
+							</div>
+						 </div>
+						 
+						<div class="control-group">
+							<label class="control-label" for="mcr">卖出日</label>
+							<div class="controls">
+							<div  class="input-append date"  id="mcr">
+							<input class="input-small " data-format="yyyy-MM-dd" id="mcrt" type="text" value="{$curDay}">
+							<span class="add-on">
+								  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+							  </i>
+							</span>
+						</div>
+							</div>
+						 </div>
+						<div class="control-group">
+							<label class="control-label" for="fxcs">年付息次数(年)</label>
+							<div class="controls">
+							  <select class="input-small " id="fxcs">
+							  	<option>1</option>
+							  	<option>2</option>
+							  	<option>4</option>
+							  	<option>12</option>
+							  </select>
+							</div>
+						 </div>
+						<div class="control-group">
+							<label class="control-label" for="syl">到期收益率</label>
+							<div class="controls">
+							  <div class="input-append">
+								<input class="input-mini " id="syl" type="text" value="0"><span class="add-on">%</span> 
+							  </div>&nbsp;&nbsp;<button class="btn btn-success" onclick="calcsy()">计算</button>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="zqjg">债券价格</label>
+							<div class="controls">
+							  <input class="input-small " id="zqjg" type="text" value="0" > <button class="btn btn-success" onclick="calc()">计算</button>
+							</div>
+						 </div>
+						 </hr>
+						 <div class="control-group">
+							<label class="control-label" for="yjlx">应计利息</label>
+							<div class="controls">
+								<input class="input-small " id="yjlx" type="text" value="0" readonly>
+							</div>
+						  </div>
+						  
+						</fieldset>
+					</div>
+				</div>
+				</div>
+			</div>		
+			
+			<include file="Public:mark" />
+			</div>
+		</div>
+    </div>
+    <include file="Public:footer" />
+</html>

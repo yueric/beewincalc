@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<script type="text/javascript">
+$(function(){     
+	$("#ipti").keyup(function(){    
+		$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+	}).bind("paste",function(){  //CTR+V事件处理    
+		$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+	}).css("ime-mode", "disabled"); //CSS设置输入法不可用       
+	$("#iptg").keyup(function(){    
+		$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+	}).bind("paste",function(){  //CTR+V事件处理    
+		$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+	}).css("ime-mode", "disabled"); //CSS设置输入法不可用   
+	 $("#cfj0").keyup(function(){    
+		$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+	}).bind("paste",function(){  //CTR+V事件处理    
+		$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+	}).css("ime-mode", "disabled"); //CSS设置输入法不可用    
+	$("input[id=cfj]").each(function(){
+        $(this).keyup(function(){    
+    		$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+    	}).bind("paste",function(){  //CTR+V事件处理    
+    		$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+    	}).css("ime-mode", "disabled"); 
+	});
+	$("input[id=nj]").each(function(){
+        $(this).keyup(function(){    
+    		$(this).val($(this).val().replace(/[^1-9]/g,''));    
+    	}).bind("paste",function(){  //CTR+V事件处理    
+    		$(this).val($(this).val().replace(/[^1-9]/g,''));     
+    	}).css("ime-mode", "disabled"); 
+	});
+});
+	var ind = 5;
+	function addTr2(tab, row){
+		var trHtml="<tr><td><label></label></td><td><input class=\"input-small \" id=\"cfj\" type=\"text\" value=\"0\"></td><td><input class=\"input-mini \" id=\"nj\" type=\"text\" value=\"1\"></td><td><button class=\"btn btn-info\" id=\"bti"+ind+"\" onclick=\"accounti("+ind+")\">删除</button></td></tr>";
+		addTr(tab, row, trHtml);
+		resetTd();
+		ind++;
+	}
+
+	 /**
+	   * 为table指定行添加一行
+	   *
+	   * tab 表id
+	   * row 行数，如：0->第一行 1->第二行 -2->倒数第二行 -1->最后一行
+	   * trHtml 添加行的html代码
+	   *
+	   */
+	  function addTr(tab, row, trHtml){
+		 //获取table最后一行 $("#tab tr:last")
+		 //获取table第一行 $("#tab tr").eq(0)
+		 //获取table倒数第二行 $("#tab tr").eq(-2)
+		 var $tr=$("#"+tab+" tr").eq(row);
+		 if($tr.size()==0){
+			alert("指定的table id或行数不存在！");
+			return;
+		 }
+		 $tr.after(trHtml);
+	  }
+	function accounti(ind){
+		$("#bti"+ind).parent().parent().remove();
+		resetTd();
+	}
+	//重设游标序号
+	function resetTd(){
+		var labs = $("#tab label");
+		for(i=0;i<labs.length;i++){
+			//alert($("#tab tr").eq(i).children().eq(0).text());
+			labs.eq(i).text(i+1);
+		}
+	}
+	//遍历计算
+	function calc(){
+		var pdata ={cfj0:$("#cfj0").val(),cfj:getSL("cfj"),nj:getSL("nj"),i:$("#ipti").val()/100,iptg:$("#iptg").val()};//
+		var url = "?m=Xjl&a=calc";			
+		inva(url,pdata,"xxx");	
+		drawCharts();
+	}
+	function afterAjax(data){
+		var arr = eval("("+data+")"); 
+		$("#irr").val(arr.irr);
+		$("#npv").val(arr.npv);
+		chart.series[0].setData(changeA(arr.charts)); 
+		chart.redraw(); 
+	}		
+	var chart;
+		$(function () {
+			chart =  new Highcharts.Chart({  
+				chart: {
+					renderTo: 'container',  
+					type: 'column'
+				},
+				title: {
+					text: '现金流'
+				},
+				xAxis: {
+					categories: []
+				},
+				yAxis: {
+					title: {
+						text: '￥'
+					}
+				},
+
+				
+				series: [{
+					name: '现金流'
+				}]
+			});
+		});
+	function drawCharts(){
+		var newn =0;
+		var datas = new Array();
+		for(i=0;i<ind;i++){				
+			if(i==0){
+				datas[newn] =  $("#cfj0").val()-0;
+				newn++;
+			}else{
+				if($("#cfj"+i).length>0){
+					if($("#nj"+i).val()-0==1){
+						datas[newn] = getNewCF($("#cfj"+i).val()-0,$("#ipti").val()/100,newn);
+						newn++;
+					}else{
+						for(j=1;j<$("#nj"+i).val()-0+1;j++){
+							datas[newn] = getNewCF($("#cfj"+i).val()-0,$("#ipti").val()/100,newn);
+							newn++;
+						}
+					}					
+				}
+			}
+		}
+		chart.series[0].setData(datas); 
+		chart.redraw(); 
+	}
+</script>
+	<include file="Public:nav" />
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row-fluid">
+			<div class="span6 main-content">			
+			<!--输入参数-->
+			<div class="row-fluid">
+				<div class="row-fluid">
+					<h2>现金流</h2>
+						<span class="info">IRR与NPV计算</span>
+					<div class="form-horizontal">
+						<fieldset>
+						 <div class="control-group">
+							<label class="control-label" for="ipti">贴现率</label>
+							<div class="controls">
+							  <div class="input-append">
+								<input class="input-small focused" id="ipti" type="text" value="0"><span class="add-on">%</span>
+							  </div>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="iptg">猜测值</label>
+							<div class="controls">
+							  <input class="input-small " id="iptg" type="text" value="0.1">
+							</div>
+						 </div>
+						 <hr/>
+						  <table class="table table-condensed" id="tab">
+							<thead>
+							  <tr >
+								<th></th>
+								<th>CFj</th>
+								<th>Nj</th>
+								<th>操作</th>
+							  </tr>
+							</thead>
+							<tbody>
+							  <tr>
+								<td>0</td>
+								<td><input class="input-small " id="cfj0" type="text" value="0"></td>
+								<td></td>
+								<td></td>
+							  </tr>
+							  <tr>
+								<td><label>1</label></td>
+								<td><input class="input-small " id="cfj" type="text" value="0"></td>
+								<td><input class="input-mini " id="nj" type="text" value="1"></td>
+								<td><button class="btn btn-info" id="bti1" onclick="accounti(1)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td><label>2</label></td>
+								<td><input class="input-small " id="cfj" type="text" value="0"></td>
+								<td><input class="input-mini " id="nj" type="text" value="1"></td>
+								<td><button class="btn btn-info" id="bti2" onclick="accounti(2)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td><label>3</label></td>
+								<td><input class="input-small " id="cfj" type="text" value="0"></td>
+								<td><input class="input-mini " id="nj" type="text" value="1"></td>
+								<td><button class="btn btn-info" id="bti3" onclick="accounti(3)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td><label>4</label></td>
+								<td><input class="input-small " id="cfj" type="text" value="0"></td>
+								<td><input class="input-mini " id="nj" type="text" value="1"></td>
+								<td><button class="btn btn-info" id="bti4" onclick="accounti(4)">删除</button></td>
+							  </tr>	
+							  <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><button class="btn btn-success" id="bti" onclick="addTr2('tab', -2)">添加</button></td>
+							  </tr>									  
+							</tbody>
+						  </table>
+						  <hr/>
+						  <div class="control-group">
+							<label class="control-label" for="irr">内部回报率(IRR)</label>
+							<div class="controls">
+								<input class="input-small " id="irr" type="text" value="0" readonly>
+							</div>
+						  </div>
+						  <div class="control-group">
+							<label class="control-label" for="npv">净现值(NPV)</label>
+							<div class="controls">
+								<input class="input-small " id="npv" type="text" value="0" readonly> <button class="btn btn-success" onclick="calc()">计算</button>
+							</div>
+						  </div>
+						  
+						
+						</fieldset>
+					</div>
+				</div>
+				</div>
+			</div>			
+			<!--输入参数 end-->
+			
+			<div class="span6 sidebar">
+				<div id="container" style="min-width: 310px;height: 400px; margin: 0 auto"></div></body>
+				</div>
+			</div> 	
+			
+			<include file="Public:mark" />
+			</div>
+		</div>
+    </div>
+    <include file="Public:footer" />
+</html>

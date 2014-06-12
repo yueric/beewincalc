@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<link rel="stylesheet" href="Public/assets/bootstrap-timepicker/css/bootstrap-datetimepicker.min.css">
+<script src="Public/assets/bootstrap-timepicker/js/bootstrap-datetimepicker.min.js"></script>
+		
+<script type="text/javascript">
+	$(function() {
+		$( "#ksrq" ).datetimepicker({
+			 language: 'cn',
+			 todayHighlight:true
+		});
+		$( "#jsrq" ).datetimepicker({
+			 todayHighlight:true
+		});
+		$("#rqxg").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));     
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#ksrqt").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));     
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#jsrqt").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));     
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+	}); 
+	function accountd(){
+		if($('input:radio:checked').val()=="sj"){
+			$("#rqxg").val(daysBetween($("#jsrqt").val(),$("#ksrqt").val()));
+		}else{			
+			$("#rqxg").val(daysB360($("#jsrqt").val(),$("#ksrqt").val()));
+		}
+	}function accountk(){
+		if($('input:radio:checked').val()=="sj"){
+			$("#ksrqt").val(daysAdd($("#jsrqt").val(),$("#rqxg").val(),"-"));
+		}else{			
+			pdata = {ksrq:$("#jsrqt").val(),itv:$("#rqxg").val(),type:"-"};
+			url = "?m=Rqhs&a=dayB360";
+			inv(url,pdata,"ksrqt");
+		}
+	}function accountj(){
+		if($('input:radio:checked').val()=="sj"){
+			$("#jsrqt").val(daysAdd($("#ksrqt").val(),$("#rqxg").val(),""));
+		}else{			
+			pdata = {ksrq:$("#ksrqt").val(),itv:$("#rqxg").val(),type:"+"};
+			url = "?m=Rqhs&a=dayB360";
+			inv(url,pdata,"jsrqt");
+		}
+	}
+	function reset(){
+		$("#ksrqt").val("{$curDay}");
+		$("#jsrqt").val("{$curDay}");
+		$("#rqxg").val("0");
+		$('input:radio[name=iptt]')[0].checked = true;
+	}
+</script>
+<body>	
+	<include file="Public:nav" />
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row-fluid">
+			 <div class="span6 main-content">			
+			<!--输入参数-->
+			<div class="row-fluid">
+				<div class="row-fluid">
+					<h2>日期换算</h2>
+					<div class="form-horizontal">
+						<fieldset>
+						  
+						  <div class="control-group">
+							<label class="control-label" for="iptt">日期模式</label>
+							<div class="controls">
+							  <input type="radio" name="iptt" id="iptt" value="sj" checked="checked" >实际天数 <input type="radio" name="iptt" id="iptt" value="zs">30/360
+							</div>							
+						  </div>
+						  <div class="control-group">
+							<label class="control-label" for="ksrq">开始日期</label>
+							<div class="controls">
+								<div class="input-append date" id="ksrq">
+									<input class="input-small " data-format="yyyy-MM-dd" id="ksrqt" type="text" value="{$curDay}"> 
+										<span class="add-on">
+										  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+										  </i>
+										</span>
+							    </div><button class="btn btn-info" onclick="accountk()">=</button>
+							</div>
+						  </div>
+						  <div class="control-group">
+							<label class="control-label" for="jsrq">结束日期</label>
+							<div class="controls">
+								<div  class="input-append date"  id="jsrq">
+									<input class="input-small " data-format="yyyy-MM-dd" id="jsrqt" type="text" value="{$curDay}">
+									<span class="add-on">
+										  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+									  </i>
+									</span>
+								</div><button class="btn btn-info" onclick="accountj()">=</button>
+							</div>
+						  </div>
+						  <div class="control-group">
+							<label class="control-label" for="rqxg">相隔天数</label>
+							<div class="controls">
+							  <input class="input-small " id="rqxg" type="text" value="0"> <button class="btn btn-info" onclick="accountd()">=</button>
+							</div>	
+						  </div>
+						  <div class="control-group">
+							<div class="controls">
+								<button class="btn btn-success" onclick="reset()">重置</button>
+							</div>
+						  </div>
+						</fieldset>
+					</div>
+				</div>
+				</div>
+			</div>			
+			<!--输入参数 end-->
+			
+			<div class="span6 sidebar">
+				<div id="container" style="min-width: 310px;height: 400px; margin: 0 auto"></div></body>
+				</div>
+			</div>	
+			
+			<include file="Public:mark" />
+			</div>
+		</div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

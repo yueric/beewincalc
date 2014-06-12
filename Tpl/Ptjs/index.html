@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<script src="Public/assets/calculator/js/jquery.blackcalculator-1.0.min.js" type="text/javascript"></script> 
+		
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.calculator').blackCalculator({type:'advanced', allowKeyboard:false, css:'Public/assets/calculator/css/'});
+	});
+</script>
+<body>	
+	<include file="Public:nav" />
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row-fluid">
+			 <div class="main-content">			
+			
+				<div class="row-fluid">
+					<div class="row-fluid">
+						<h2>普通计算器</h2>
+						<div class="calculator"></div>
+					</div>
+					</div>
+				</div>		
+			
+			<include file="Public:mark" />
+			</div>
+		</div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

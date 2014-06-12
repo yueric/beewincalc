@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<script type="text/javascript">
+	$(function(){     
+		/*JQuery 限制文本框只能输入数字
+		$("#id").keyup(function(){    
+				$(this).val($(this).val().replace(/\D|^0/g,''));  
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/\D|^0/g,''));     
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用    
+		 */   
+		/*JQuery 限制文本框只能输入数字和小数点*/ 
+		
+		$("#iptn").focus();
+		$("#iptn").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9/-]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#ipti").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用    
+		$("#ipti").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#iptpv").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用    
+		$("#iptpv").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#iptfmt").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用 
+		$("#iptfv").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#iptn").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#iptfmt").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#iptfv").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用   
+
+		$("#zznj").hide();
+		$("#njmo").bind("click",function(){ 
+			if(document.getElementById("njmo").checked){
+				$("#zznj").show();
+				$("#iptg").focus();
+			}else{
+				$("#zznj").hide();
+				$("#iptg").val(0);
+			}  
+		});
+	}); 
+	var chart;
+	$(function () {
+		chart =  new Highcharts.Chart({  
+			chart: {
+				renderTo: 'container',  
+				type: 'column'
+			},
+			title: {
+				text: '货币时间价值'
+			},
+			xAxis: {
+				//categories: []
+			},
+			yAxis: {
+				title: {
+					text: '￥'
+				}
+			},
+			credits: {
+				enabled: false
+			},
+			series: [{
+				name: 'PV'
+			}, {
+				name: 'PMT'
+			}, {
+				name: 'FV'
+			}]
+		});
+	});
+	function afterAjax(){
+		drawCharts();
+	}
+	function drawCharts(){
+		var pdata ={n:$("#iptn").val(),p:$("#iptpv").val(),pmt:$("#iptfmt").val(),g:$("#iptg").val()/100,f:$("#iptfv").val(),type:$('input:radio:checked').val()};
+		var url = "?m=Hbsj&a=getDraws";		
+		$.ajax({   
+	        url: url,//提交访问的URL   
+	        type: 'GET',//提交的方法   
+	        data: pdata,
+	        dataType: 'text',//返回的内容的类型，由于PHP文件是直接echo的，那么这里就是text   
+	        timeout: 1000,//超时时间   
+	        error: function(){ //如果出错，执行函数   
+	            alert('调用出错，请重试！');   
+	        },   
+	        success: function(data){
+	        	var arr=eval(data); 
+	        	chart.series[0].setData(changeA(arr[0]));  
+	    		chart.series[1].setData(changeA(arr[1]));
+	    		chart.series[2].setData(changeA(arr[2]));
+	    		chart.redraw(); 
+	        }   
+	    }); 		
+	}
+	function accounti(){
+		var pdata ={n:$("#iptn").val(),p:$("#iptpv").val(),pmt:$("#iptfmt").val(),f:$("#iptfv").val(),type:$('input:radio:checked').val(),g:$("#iptg").val()/100,cy:$("#iptcy").val(),py:$("#iptpy").val()};//
+		var url = "?m=Hbsj&a=getI";			
+		inva(url,pdata,"ipti");	
+	}
+	function accountn(){
+		var pdata ={i:$("#ipti").val()/100,p:$("#iptpv").val(),pmt:$("#iptfmt").val(),f:$("#iptfv").val(),g:$("#iptg").val()/100,cy:$("#iptcy").val(),py:$("#iptpy").val()};
+		var url = "?m=Hbsj&a=getStartN";
+		if($('input:radio:checked').val()=="end"){
+			url = "?m=Hbsj&a=getEndN";
+		}		
+		inva(url,pdata,"iptn");
+	}
+	function accountp(){
+		var pdata = {i:$("#ipti").val()/100,n:$("#iptn").val(),pmt:$("#iptfmt").val(),f:$("#iptfv").val(),g:$("#iptg").val()/100,cy:$("#iptcy").val(),py:$("#iptpy").val()};
+		var url = "?m=Hbsj&a=getStartPV";
+		if($('input:radio:checked').val()=="end"){
+			url = "?m=Hbsj&a=getEndPV";
+		}
+		inva(url,pdata,"iptpv");
+	}	
+	function accountf(){
+		var pdata = {i:$("#ipti").val()/100,n:$("#iptn").val(),pmt:$("#iptfmt").val(),p:$("#iptpv").val(),g:$("#iptg").val()/100,cy:$("#iptcy").val(),py:$("#iptpy").val()};
+		var url = "?m=Hbsj&a=getStartFV";
+		if($('input:radio:checked').val()=="end"){
+			url = "?m=Hbsj&a=getEndFV";
+		}
+		inva(url,pdata,"iptfv");
+	}	
+	function accountfmt(){
+		var pdata = {i:$("#ipti").val()/100,n:$("#iptn").val(),p:$("#iptpv").val(),f:$("#iptfv").val(),g:$("#iptg").val()/100,cy:$("#iptcy").val(),py:$("#iptpy").val()};
+		var url = "?m=Hbsj&a=getStartPMT";
+		if($('input:radio:checked').val()=="end"){
+			url = "?m=Hbsj&a=getEndPMT";
+		}
+		inva(url,pdata,"iptfmt");
+	}
+	
+	function reset(){
+		$("#iptpv").val("0");
+		$("#iptn").val("0");
+		$("#ipti").val("0");
+		$("#iptfv").val("0");
+		$("#iptfmt").val("0");
+		$('input:radio[name=iptm]')[0].checked = true;
+		$("#zznj").hide();
+		$("#iptcy").val("1");
+		$("#iptpy").val("1");
+		$("#njmo").attr("checked", false);
+	}
+</script>
+<include file="Public:nav" />
+<div class="content">
+<div class="container-fluid">
+<div class="row-fluid">
+<div class="span6 main-content"><!--输入参数-->
+<div class="row-fluid">
+<div class="row-fluid">
+<h2>TVM</h2>
+<span class="info">货币时间价值</span>
+<div class="form-horizontal"><!--form class="form-horizontal"-->
+	<fieldset>
+		<div class="control-group  inline-block">
+			<label class="control-label" for="inputn">n</label>
+			<div class="controls"><input class="input-small focused" id="iptn" type="text" value="0"> &nbsp;&nbsp;
+				<button class="btn btn-info" id="btn" onclick="accountn()">=</button>
+			</div>
+		</div>
+		<div class="control-group"><label class="control-label"	for="inputi">I</label>
+			<div class="controls">
+			<div class="input-append"><input class="input-mini focused" id="ipti" type="text" value="0"><span class="add-on">%</span>
+				</div>&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-info" id="bti" onclick="accounti()">=</button>
+			</div>
+		</div>
+		<div class="control-group"><label class="control-label" for="inputpv">PV</label>
+			<div class="controls"><input class="input-small focused" id="iptpv" type="text" value="0"> &nbsp;&nbsp;
+				<button class="btn btn-info" onclick="accountp()">=</button>
+			</div>
+		</div>
+		<div class="control-group"><label class="control-label" for="inputfmt">PMT</label>
+			<div class="controls"><input class="input-small focused" id="iptfmt" type="text" value="0"> &nbsp;&nbsp;
+				<button class="btn btn-info" onclick="accountfmt()">=</button>
+			</div>
+		</div>
+		<div class="control-group"><label class="control-label"	for="inputfv">FV</label>
+			<div class="controls"><input class="input-small focused" id="iptfv" type="text" value="0"> &nbsp;&nbsp;
+				<button class="btn btn-info" onclick="accountf()">=</button>
+			</div>
+		</div>
+		<div class="control-group"><label class="control-label" for="inputm">年金模式</label>
+			<div class="controls"><input type="radio" name="iptm" id="iptm" value="end" checked="checked">期末 
+				<input type="radio"	name="iptm" id="iptm" value="start">期初&nbsp;&nbsp;&nbsp;<input type="checkbox" id="njmo">扩展变量</div>
+			</div>
+		
+		<div id="zznj">
+		<div class="control-group">
+			<label class="control-label" for="iptpy">P/Y</label>
+				<div class="controls"><input class="input-small focused" id="iptpy" type="text" value="1">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="iptcy">C/Y</label>
+				<div class="controls"><input class="input-small focused" id="iptcy" type="text" value="1">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="iptg">g</label>
+				<div class="controls"><div class="input-append">
+				<input class="input-mini focused" id="iptg" type="text" value="0"><span class="add-on">%</span>
+			</div>
+			</div>
+			</div>
+		</div>
+
+<div class="control-group">
+<div class="controls">
+<button class="btn btn-success" onclick="reset()">重置</button>
+<button class="btn btn-success" onclick="drawCharts()">图表</button>
+</div>
+</div>
+</fieldset>
+<!--/form--></div>
+</div>
+</div>
+</div>
+<!--输入参数 end-->
+
+<div class="span6 sidebar">
+<div id="container"
+	style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+</div>
+</div>
+
+<include file="Public:mark" /></div>
+</div>
+</div>
+<include file="Public:footer" />
+</html>

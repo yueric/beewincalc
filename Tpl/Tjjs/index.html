@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<script type="text/javascript">
+	$(function(){
+		$("input[id=slx]").each(function(){
+	        $(this).keyup(function(){    
+	    		$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+	    	}).bind("paste",function(){  //CTR+V事件处理    
+	    		$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+	    	}).css("ime-mode", "disabled"); 
+		});
+		$("input[id=sly]").each(function(){
+	        $(this).keyup(function(){    
+	    		$(this).val($(this).val().replace(/[^0-9./-]/g,''));    
+	    	}).bind("paste",function(){  //CTR+V事件处理    
+	    		$(this).val($(this).val().replace(/[^0-9./-]/g,''));     
+	    	}).css("ime-mode", "disabled"); 
+		});
+		$("#chky").bind("click",function(){ 
+			if(document.getElementById("chky").checked){
+				showY();
+			}else{
+				hideY();
+			}  
+		});
+		hideY();
+	});
+	//是否显示Y数列
+	function showY(){
+		$("input[id=sly]").each(function(){
+			$(this).show();
+			$(this).val(0);
+		});
+		$("#ztbzcy").show();
+		$("#ybbzcy").show();
+		$("#jzy").show();
+		$("#yxg").show();
+		$("#ztbzcy").val(0);
+		$("#ybbzcy").val(0);
+		$("#jzy").val(0);
+		$("#yxg").val(0);
+		$("#xgxs").val(0);
+		$("#hgx").val(0);
+		$("#hgy").val(0);
+	}
+	function hideY(){
+		$("input[id=sly]").each(function(){
+			$(this).hide();
+		});
+		$("#ztbzcy").hide();
+		$("#ybbzcy").hide();
+		$("#jzy").hide();
+		$("#yxg").hide();
+	}
+	
+	var ind = 6;
+	function addTr2(tab, row){
+		var trHtml="<tr><td><label></label></td><td><input class=\"input-small \" id=\"slx\" type=\"text\" value=\"0\"></td><td><input class=\"input-small \" id=\"sly\" type=\"text\" value=\"0\" ></td><td><button class=\"btn btn-info\" id=\"bti"+ind+"\" onclick=\"accounti("+ind+")\">删除</button></td></tr>";
+		addTr(tab, row, trHtml);
+		resetTd();
+		ind++;
+		if(!document.getElementById("chky").checked){
+			hideY();
+		}
+	}
+
+	 /**
+	   * 为table指定行添加一行
+	   *
+	   * tab 表id
+	   * row 行数，如：0->第一行 1->第二行 -2->倒数第二行 -1->最后一行
+	   * trHtml 添加行的html代码
+	   *
+	   */
+	  function addTr(tab, row, trHtml){
+		 //获取table最后一行 $("#tab tr:last")
+		 //获取table第一行 $("#tab tr").eq(0)
+		 //获取table倒数第二行 $("#tab tr").eq(-2)
+		 var $tr=$("#"+tab+" tr").eq(row);
+		 if($tr.size()==0){
+			alert("指定的table id或行数不存在！");
+			return;
+		 }
+		 $tr.after(trHtml);
+	  }
+	function accounti(ind){
+		$("#bti"+ind).parent().parent().remove();
+		resetTd();
+	}
+	//重设游标序号
+	function resetTd(){
+		var labs = $("#tab label:not(.checkbox)");
+		for(i=0;i<labs.length;i++){
+			//alert($("#tab tr").eq(i).children().eq(0).text());
+			labs.eq(i).text(i+1);
+		}
+	}
+	
+	function calc(){
+		var pdata ={xl:getSL("slx")};//
+		var url = "?m=Tjjs&a=calc";	
+		if(document.getElementById("chky").checked){
+			pdata = {xl:getSL("slx"),xly:getSL("sly")};
+			url = "?m=Tjjs&a=calcTwo";
+		}
+		inva(url,pdata,"xxx");	
+	}
+	function afterAjax(data){
+		var arr = eval("("+data+")"); 		
+		$("#jzx").val(arr.pjz);
+		$("#ybbzcx").val(arr.ybc);
+		$("#ztbzcx").val(arr.ztc);
+		if(document.getElementById("chky").checked){
+			$("#jzy").val(arr.pjzy);
+			$("#ybbzcy").val(arr.ybcy);
+			$("#ztbzcy").val(arr.ztcy);
+			$("#xgxs").val(arr.xgxs);
+		}
+	}	
+	function calcx(){
+		pdata = {xl:getSL("slx"),xly:getSL("sly"),hgy:$("#hgy").val()};
+		url = "?m=Tjjs&a=calcX";
+		inv(url,pdata,"hgx");
+		}
+	function calcy(){
+		pdata = {xl:getSL("slx"),xly:getSL("sly"),hgx:$("#hgx").val()};
+		url = "?m=Tjjs&a=calcY";
+		inv(url,pdata,"hgy");
+	}
+</script>
+	<include file="Public:nav" />
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row-fluid">
+			 <div class="span6 main-content">			
+			<!--输入参数-->
+			<div class="row-fluid">
+				<div class="row-fluid">
+					<h2>统计计算器</h2>
+					<div class="form-horizontal">
+						<fieldset>
+						  <!--div class="control-group">
+							<label class="control-label" for="iptt">变量</label>
+							<div class="controls">
+							  <input type="radio" name="iptt" id="iptt" value="one" checked="checked" >一元    <input type="radio" name="iptt" id="iptt" value="two" disabled>二元
+							</div>							
+						  </div>
+						   <hr/-->
+						  <table class="table table-condensed" id="tab">
+							<thead>
+							  <tr>
+								<th></th>
+								<th>数列X</th>
+								<th><label class="checkbox"><input type="checkbox" id="chky">数列Y</label></th>
+								<th>操作</th>
+							  </tr>
+							</thead>
+							<tbody>
+							  <tr>
+								<td><label>1</label></td>
+								<td><input class="input-small " id="slx" type="text" value="0"></td>
+								<td><input class="input-small " id="sly" type="text" value="0"></td>
+								<td><button class="btn btn-info" id="bti1" onclick="accounti(1)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td><label>2</label></td>
+								<td><input class="input-small " id="slx" type="text" value="0"></td>
+								<td><input class="input-small " id="sly" type="text" value="0"></td>
+								<td><button class="btn btn-info" id="bti2" onclick="accounti(2)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td><label>3</label></td>
+								<td><input class="input-small " id="slx" type="text" value="0"></td>
+								<td><input class="input-small " id="sly" type="text" value="0"></td>
+								<td><button class="btn btn-info" id="bti3" onclick="accounti(3)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td><label>4</label></td>
+								<td><input class="input-small " id="slx" type="text" value="0"></td>
+								<td><input class="input-small " id="sly" type="text" value="0"></td>
+								<td><button class="btn btn-info" id="bti4" onclick="accounti(4)">删除</button></td>
+							  </tr>	
+							  <tr>
+								<td><label>5</label></td>
+								<td><input class="input-small " id="slx" type="text" value="0"></td>
+								<td><input class="input-small " id="sly" type="text" value="0"></td>
+								<td><button class="btn btn-info" id="bti5" onclick="accounti(5)">删除</button></td>
+							  </tr>
+							  <tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><button class="btn btn-success" id="bti" onclick="addTr2('tab', -5)">添加</button></td>
+							  </tr>	
+							  <tr>
+									<td>均值</td>
+									<td><input class="input-small " id="jzx" type="text" value="0" readonly> </td>
+									<td><input class="input-small " id="jzy" type="text" value="0" readonly> </td>									
+									<td> <button class="btn btn-success" onclick="calc()">计算</button></td>
+								</tr>	
+								<tr>
+									<td>样本标准差</td>
+									<td><input class="input-small " id="ybbzcx" type="text" value="0" readonly> </td>
+									<td><input class="input-small " id="ybbzcy" type="text" value="0" readonly> </td>									
+									<td></td>
+								</tr>
+								<tr>
+									<td>总体标准差</td>
+									<td><input class="input-small " id="ztbzcx" type="text" value="0" readonly> </td>
+									<td><input class="input-small " id="ztbzcy" type="text" value="0" readonly> </td>									
+									<td></td>
+								</tr>									  
+							</tbody>
+						  </table>
+						  <div id="yxg">
+						  <div class="control-group"><label class="control-label" for="inputfmt">相关系数</label>
+							<div class="controls">
+								<input class="input-small " id="xgxs" type="text" value="0" readonly>
+							</div>
+						  </div>
+						  <div class="control-group"><label class="control-label" for="inputfmt">回归方程</label>
+							<div class="controls"><h2>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 
+							 a   +   b  &nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp; x</h2></div>
+							<div class="controls">
+								<div class="input-append">
+								<input class="input-mini"	id="hgy" type="text" value="0"><button class="btn btn-success" onclick="calcy()">=</button>
+								</div>=0...... + 2.....*<div class="input-append">
+								<input class="input-mini"	id="hgx" type="text" value="0"><button class="btn btn-success" onclick="calcx()">=</button>
+							</div>
+						  </div>
+						   </div>			
+							</div>		
+						</fieldset>
+					</div>
+				</div>
+				</div>
+			</div>			
+			<!--输入参数 end-->
+			
+			<div class="span6 sidebar">
+				<div id="container" style="min-width: 310px;height: 400px; margin: 0 auto"></div></body>
+				</div>
+			</div>	
+			
+			<include file="Public:mark" />
+			</div>
+		</div>
+    </div>
+    <include file="Public:footer" />
+</html>

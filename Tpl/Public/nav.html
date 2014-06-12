@@ -1,0 +1,51 @@
+<div class="navbar">
+        <div class="navbar-inner">
+                <ul class="nav pull-right">
+                    <!--li class="hidden-phone"><a href="#" role="button">设置</a></li>
+                    <li id="fat-menu" class="dropdown">
+                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-user"></i> 张三
+                            <i class="icon-caret-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#">我的账号</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" class="visible-phone" href="#">设置</a></li>
+                            <li class="divider visible-phone"></li>
+                            <li><a tabindex="-1" href="sign-in.html">Logout</a></li>
+                        </ul>
+                    </li-->
+                </ul>
+                <a class="brand" href="./">秉文金融计算器 Financial Calculator</a>
+        </div>
+    </div>
+    <div id="main-menu">        
+        <div id="phone-navigation">
+            <select class="selectnav" id="phone-menu">                
+                <option value="?m=Hbsj" <?php if($ntype=="hbsj"){ echo "selected=\"selected\"";} ?> >货币时间价值</option>                    
+                <option value="?m=Apr" <?php if($ntype=="apr"){ echo "selected=\"selected\"";} ?>>利率换算</option>                 
+                <option value="?m=Fdtx" <?php if($ntype=="fdtx"){ echo "selected=\"selected\"";} ?>>房贷摊销</option>                 
+                <option value="?m=Xjl" <?php if($ntype=="xjl"){ echo "selected=\"selected\"";} ?>>现金流</option>                 
+                <option value="?m=Rqhs" <?php if($ntype=="rqhs"){ echo "selected=\"selected\"";} ?>>日期换算</option>                 
+                <option value="?m=Zqjs" <?php if($ntype=="zqjs"){ echo "selected=\"selected\"";} ?>>债券计算器</option>                 
+                <option value="?m=Tjjs" <?php if($ntype=="tjjs"){ echo "selected=\"selected\"";} ?>>统计计算器</option>               
+                <option value="?m=Ptjs" <?php if($ntype=="ptjs"){ echo "selected=\"selected\"";} ?>>普通计算器</option>             
+                <option value="?m=Index" <?php if($ntype=="help"){ echo "selected=\"selected\"";} ?>>Help</option>
+           </select>
+        </div>        
+  	</div>
+	<div id="sidebar-nav">        
+        <ul id="dashboard-menu" class="nav nav-list">            
+            <li class="<?php if($ntype=="hbsj"){ echo "active";} ?> "><a href="?m=Hbsj"><i class="icon-signal"></i> <span>货币时间价值</span></a></li>
+            <li class="<?php if($ntype=="apr"){ echo "active";} ?> "><a href="?m=Apr"><i class="icon-refresh"></i> <span>利率换算</span></a></li>   
+            <li class="<?php if($ntype=="fdtx"){ echo "active";} ?> "><a href="?m=Fdtx"><i class="icon-home"></i> <span>房贷摊销</span></a></li>
+            <li class="<?php if($ntype=="xjl"){ echo "active";} ?> "><a href="?m=Xjl"><i class="icon-magic"></i> <span>现金流</span></a></li>
+            <li class="<?php if($ntype=="rqhs"){ echo "active";} ?> "><a href="?m=Rqhs"><i class="icon-calendar"></i> <span>日期换算</span></a></li>
+            <li class="<?php if($ntype=="zqjs"){ echo "active";} ?> "><a href="?m=Zqjs"><i class="icon-briefcase"></i> <span>债券计算器</span></a></li>
+            <li class="<?php if($ntype=="tjjs"){ echo "active";} ?> "><a href="?m=Tjjs"><i class="icon-list"></i> <span>统计计算器</span></a></li>
+            <li class="<?php if($ntype=="ptjs"){ echo "active";} ?> "><a href="?m=Ptjs"><i class="icon-plus"></i> <span>普通计算器</span></a></li>
+            <li class="<?php if($ntype=="help"){ echo "active";} ?>"><a href="?m=Index"><i class="icon-question-sign"></i> <span>Help</span></a></li>
+        </ul>
+   	</div>
+    

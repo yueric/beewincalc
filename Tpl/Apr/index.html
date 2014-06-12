@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<include file="Public:header" />
+<script type="text/javascript">
+	$("#apr").focus();
+	$(function(){     				
+		$("#ear").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#ynum").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用  
+		$("#apr").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9.]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9.]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#ear").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用
+		$("#ynum").keyup(function(){    
+				$(this).val($(this).val().replace(/[^0-9]/g,''));    
+			}).bind("paste",function(){  //CTR+V事件处理    
+				$(this).val($(this).val().replace(/[^0-9]/g,''));     
+			}).bind("keydown", function (e) {
+				if (e.which == 13) {   //Enter key
+					e.preventDefault();
+					$("#apr").focus();
+				}
+			}).css("ime-mode", "disabled"); //CSS设置输入法不可用   
+		$("#rtype:radio").change(function(){
+			//chrome支持不好，暂不实现
+			if($('input:radio:checked').val()=="year"){
+				//alert("year");
+			}else if($('input:radio:checked').val()=="con"){
+				//alert("con");
+			}
+		});
+	}); 
+
+	function reset(){
+		$("#apr").val("0");
+		$("#ear").val("0");
+		$("#ynum").val("0");
+		$('input:radio[name=rtype]')[0].checked = true;
+	}
+	
+	function accountAPR(){
+		var pdata ={type:$('input:radio:checked').val(),ear:$('#ear').val()/100,n:$('#ynum').val()};//
+		var url = "?m=Apr&a=getAPR";			
+		inv(url,pdata,"apr");	
+	}
+	function accountEAR(){
+		var pdata ={type:$('input:radio:checked').val(),apr:$('#apr').val()/100,n:$('#ynum').val()};//
+		var url = "?m=Apr&a=getEAR";			
+		inv(url,pdata,"ear");	
+	}
+</script>
+	<include file="Public:nav" />
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row-fluid">
+			 <div class="span6 main-content">			
+			<!--输入参数-->
+			<div class="row-fluid">
+				<div class="row-fluid">
+					<h2>APR&EAR换算</h2>
+						<span class="info"></span>
+					<div class="form-horizontal">
+						<fieldset>
+						  <div class="control-group">
+							
+						  <label class="control-label" for="rtype">年复利次数</label>
+							<div class="controls">
+							  <input type="radio" name="rtype" id="rtype" value="year" checked="" >		
+							  <input class="input-small focused" id="ynum" type="text" value="0">
+							 </div>							
+						  </div>
+						  <div class="control-group">
+						  <label class="control-label" for="rtype">连续复利</label>
+							<div class="controls">
+							  <input type="radio" name="rtype" id="rtype" value="con">
+							 </div>							
+						  </div>
+						  <div class="control-group">
+							<label class="control-label" for="apr">APR</label>
+							<div class="controls">
+								<div class="input-append">	
+								  <input class="input-small " id="apr" type="text" value="0"><span class="add-on">%</span><button class="btn btn-info" onclick="accountAPR()">=</button>
+								</div>
+							</div>
+						  </div>
+						  <div class="control-group">
+							<label class="control-label" for="ear">EAR</label>
+							<div class="controls">
+								<div class="input-append">	
+								  <input class="input-small " id="ear" type="text" value="0"><span class="add-on">%</span><button class="btn btn-info" onclick="accountEAR()">=</button>
+								</div>
+							</div>
+						  </div> 
+						  <div class="control-group">
+							<div class="controls">
+								<button class="btn btn-success" onclick="reset()">重置</button>			
+							</div>
+						  </div>
+						</fieldset>
+					</div>
+				</div>
+				</div>
+			</div>			
+			<!--输入参数 end-->
+			
+			<div class="span6 sidebar"></div>
+			</div>
+			<include file="Public:mark" />
+		</div>
+    </div>
+    <include file="Public:footer" />
+</html>
